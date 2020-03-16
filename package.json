@@ -1,0 +1,28 @@
+{
+  "name": "app-error",
+  "version": "1.0.0",
+  "description": "为追踪应用层面异常而设计的、优雅的、继承 built-in Error 对象的错误对象",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "lint": "./node_modules/.bin/eslint .",
+    "jest": "jest",
+    "test": "npm run lint && npm run jest"
+  },
+  "keywords": [
+    "AppError"
+  ],
+  "author": "xsmallbird@gmail.com",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-node": "^11.0.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "jest": "^25.1.0"
+  }
+}
