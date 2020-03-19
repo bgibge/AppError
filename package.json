@@ -1,5 +1,5 @@
 {
-  "name": "app-error",
+  "name": "@bgibge/app-error",
   "version": "1.0.0",
   "description": "Elegant app error object inheriting built-in error object, designed to track application level exceptions.",
   "main": "index.js",
