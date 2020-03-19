@@ -1,5 +1,5 @@
 {
-  "name": "app-error",
+  "name": "@bgibge/app-error",
   "version": "1.0.0",
   "description": "为追踪应用层面异常而设计的、优雅的、继承 built-in Error 对象的错误对象",
   "main": "index.js",
