@@ -1,0 +1,1 @@
+# Elegant app error object inheriting built-in error object, designed to track application level exceptions.
