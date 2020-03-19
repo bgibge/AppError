@@ -1,7 +1,7 @@
 {
   "name": "app-error",
   "version": "1.0.0",
-  "description": "为追踪应用层面异常而设计的、优雅的、继承 built-in Error 对象的错误对象",
+  "description": "Elegant app error object inheriting built-in error object, designed to track application level exceptions.",
   "main": "index.js",
   "directories": {
     "lib": "lib"
@@ -12,9 +12,10 @@
     "test": "npm run lint && npm run jest"
   },
   "keywords": [
-    "AppError"
+    "AppError",
+    "error"
   ],
-  "author": "xsmallbird@gmail.com",
+  "author": "bgibge@163.com",
   "license": "ISC",
   "devDependencies": {
     "eslint": "^6.8.0",
