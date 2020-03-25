@@ -11,6 +11,20 @@ const AppError = require('..')
 
 
 
+
+function divide (num1, num2) {
+  const value = num1 / num2
+
+  if (value === Infinity) {
+    const appError = new AppError('ZeroDivisionError', 'division by zero')
+
+    appError.addContext({ num1, num2 })
+
+    throw appError
+  }
+}
+
+
 test('AppError instance is built-in Error instance', () => {
   expect(new AppError()).toBeInstanceOf(Error)
 })
@@ -18,7 +32,7 @@ test('AppError instance is built-in Error instance', () => {
 
 
 test('Make a `Unknown` AppError instance', () => {
-  expect(new AppError().name).toEqual('Unknown')
+  expect(new AppError().name).toEqual('UnknownError')
 })
 
 
@@ -42,9 +56,10 @@ test('Cast built-in Error to AppError', () => {
 
 
 test('Cast except built-in Error to AppError', () => {
-  expect(AppError.cast('a').name).toEqual('Unknown')
-  expect(AppError.cast(111).name).toEqual('Unknown')
-  expect(AppError.cast(false).name).toEqual('Unknown')
+  expect(AppError.cast('a').name).toEqual('a')
+  expect(AppError.cast(111).name).toEqual(111)
+  expect(AppError.cast(false).name).toEqual(AppError.settings.defaultName)
+  expect(AppError.cast('ZeroDivisionError', 'division by zero').message).toEqual('division by zero')
 })
 
 
@@ -88,18 +103,6 @@ test('Test AppError.isAppError()', () => {
 
 
 test('Test addContext() method', () => {
-  function divide (num1, num2) {
-    const value = num1 / num2
-
-    if (value === Infinity) {
-      const appError = new AppError('ZeroDivisionError', 'division by zero')
-
-      appError.addContext({ num1, num2 })
-
-      throw appError
-    }
-  }
-
   try {
     divide(2, 0)
   } catch (error) {
@@ -128,7 +131,7 @@ describe('Test toJSON() method', () => {
 
     expect(appError.toJSON(['id', 'message'])).toEqual({
       id: expect.any(String),
-      message: 'Unknown Error'
+      message: ''
     })
   })
 
@@ -167,3 +170,90 @@ describe('Test toJSON() method', () => {
   })
 })
 
+
+
+describe('After Global Setting', () => {
+  beforeAll(() => {
+    AppError.configure({
+      namePrefix: 'Test:',
+
+      messagePrefix: '测试消息前缀：',
+
+      defaultName: 'AppError',
+      defaultMessage: '未知异常',
+      defaultIsOperational: true
+    })
+  })
+
+
+  test('Have correct settings after global setting', () => {
+    expect(AppError.settings).toEqual({
+      namePrefix: 'Test:',
+      nameSuffix: '',
+
+      messagePrefix: '测试消息前缀：',
+      messageSuffix: '',
+
+      defaultName: 'AppError',
+      defaultMessage: '未知异常',
+      defaultIsOperational: true
+    })
+  })
+
+
+  test('New a default AppError instance', () => {
+    const appError = new AppError()
+
+    expect(appError.toJSON()).toEqual({
+      id: expect.any(String),
+      name: 'Test:AppError',
+      message: '测试消息前缀：未知异常',
+      isOperational: true,
+      created: expect.any(Number),
+      context: undefined,
+      stack: expect.any(String)
+    })
+  })
+
+
+  test('Test addContext() method', () => {
+    try {
+      divide(2, 0)
+    } catch (error) {
+      expect(error).toBeInstanceOf(AppError)
+
+      expect(error.toJSON()).toEqual({
+        id: expect.any(String),
+        name: 'Test:ZeroDivisionError',
+        message: '测试消息前缀：division by zero',
+        isOperational: true,
+        created: expect.any(Number),
+        context: expect.objectContaining({
+          num1: 2,
+          num2: 0
+        }),
+        stack: expect.any(String)
+      })
+    }
+  })
+
+  test('new AppError(error)', () => {
+    let appError
+
+    try {
+      a
+    } catch (error) {
+      appError = new AppError(error, '', false)
+    }
+
+    expect(appError.toJSON()).toEqual({
+      id: expect.any(String),
+      name: 'Test:ReferenceError',
+      message: '测试消息前缀：a is not defined',
+      isOperational: false,
+      created: expect.any(Number),
+      context: undefined,
+      stack: expect.any(String)
+    })
+  })
+})
